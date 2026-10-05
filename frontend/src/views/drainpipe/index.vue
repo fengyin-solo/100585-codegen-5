@@ -37,6 +37,7 @@
       <thead>
         <tr>
           <th v-for="column in columns" :key="column">{{ column }}</th>
+          <th>抽检评定</th>
           <th>当前状态</th>
           <th>可执行动作</th>
         </tr>
@@ -44,6 +45,12 @@
       <tbody>
         <tr v-for="row in rows" :key="String(row.id)">
           <td v-for="column in columns" :key="column">{{ row[column] ?? '—' }}</td>
+          <td>
+            <span v-if="row['抽检评定']" :class="row['抽检评定'] === '抽检合格' ? 'verdict-ok' : 'verdict-fail'">
+              {{ row['抽检评定'] }}
+            </span>
+            <span v-else class="verdict-pending">待评定</span>
+          </td>
           <td>{{ row.status }}</td>
           <td class="row-actions">
             <button
@@ -58,7 +65,7 @@
           </td>
         </tr>
         <tr v-if="!rows.length">
-          <td :colspan="columns.length + 2" class="empty-state">暂无排水管网数据，可先登记排水管段</td>
+          <td :colspan="columns.length + 3" class="empty-state">暂无排水管网数据，可先登记排水管段</td>
         </tr>
       </tbody>
     </table>
@@ -135,3 +142,9 @@ function reload() {
 
 onMounted(reload)
 </script>
+
+<style scoped>
+.verdict-ok { color: #177245; font-weight: 600; }
+.verdict-fail { color: #b42318; font-weight: 600; }
+.verdict-pending { color: var(--muted); }
+</style>

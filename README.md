@@ -60,6 +60,13 @@ npm run build
 | 排水设备台账 | `drainequipment` | 排水设备 | 设备编号、设备名称、设备型号 |
 | 管道内窥检测 | `cctvinspect` | 内窥检测记录 | 检测编号、检测管段、缺陷等级 |
 | 排水调度方案 | `dispatchplan` | 调度方案 | 方案编号、方案名称、适用雨型 |
+| 管网抽检评定 | `sampling` | 抽检批次/抽检对象 | 批次编号、管段编号、检测项、初检/复检结论 |
+
+抽检模块是跨台账的复合模块（页面 `frontend/src/views/sampling/index.vue`，业务规则集中在
+`frontend/src/api/sampling-service.ts`）：对象取自排水管段台账，缺字段逐行挡回；同批次同对象只保留
+一条生效判定（策略见 `sampling-types.ts` 的 `DUPLICATE_POLICY`，默认「先到为准」，每次报送均留痕）；
+初检不合格自动进复检，复检结果未齐批次不得办结；初检与复检结论冲突时以最近一次检测报告为准，办结后
+回写管段台账并更新「管段待评定清单」。抽检数据单独存于 `drainage-pump:sampling-batches`。
 
 ## 约定
 
